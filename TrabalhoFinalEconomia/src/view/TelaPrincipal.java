@@ -16,6 +16,8 @@ public class TelaPrincipal extends javax.swing.JFrame {
      */
     public TelaPrincipal() {
         initComponents();
+        
+        
     }
 
     /**
@@ -32,17 +34,17 @@ public class TelaPrincipal extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         btnCalcular = new javax.swing.JButton();
         btnSair = new javax.swing.JButton();
-        cbTaxa = new javax.swing.JComboBox<>();
+        cbTaxa = new javax.swing.JComboBox<String>();
         edTaxa = new javax.swing.JTextField();
         edValor = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         edQtdParcelas = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        cbSerie = new javax.swing.JComboBox<>();
+        cbSerie = new javax.swing.JComboBox<String>();
         jLabel6 = new javax.swing.JLabel();
         edDesconto = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        cbAmortizacao = new javax.swing.JComboBox<>();
+        cbAmortizacao = new javax.swing.JComboBox<String>();
         btnGerarPDF = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         taTabela = new javax.swing.JTextArea();
@@ -50,6 +52,10 @@ public class TelaPrincipal extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         edNomeProduto = new javax.swing.JTextField();
         btLimpar = new javax.swing.JButton();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jmSobre = new javax.swing.JMenu();
+        jjmSobre = new javax.swing.JMenuItem();
+        jjmTutorial = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -64,15 +70,15 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         btnSair.setText("Sair");
 
-        cbTaxa.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbTaxa.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        edValor.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        edValor.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         jLabel4.setText("Qtde. Parcelas:");
 
         jLabel5.setText("Série:");
 
-        cbSerie.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbSerie.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jLabel6.setText("Desconto (%): ");
 
@@ -86,7 +92,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         jScrollPane1.setViewportView(taTabela);
 
         jLabel8.setFont(new java.awt.Font("Tw Cen MT Condensed Extra Bold", 0, 36)); // NOI18N
-        jLabel8.setText("Sistema de Financiamento ");
+        jLabel8.setText("SF - Simulador de Financiamentos");
 
         jLabel9.setText("Nome Produto:");
 
@@ -97,6 +103,18 @@ public class TelaPrincipal extends javax.swing.JFrame {
         });
 
         btLimpar.setText("Limpar");
+
+        jmSobre.setText("Opções");
+
+        jjmSobre.setText("Sobre");
+        jmSobre.add(jjmSobre);
+
+        jjmTutorial.setText("Tutorial");
+        jmSobre.add(jjmTutorial);
+
+        jMenuBar1.add(jmSobre);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -158,9 +176,9 @@ public class TelaPrincipal extends javax.swing.JFrame {
                                     .addComponent(jLabel9)
                                     .addComponent(edNomeProduto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(9, 9, 9)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(edValor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(edValor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(edDesconto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -190,7 +208,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
                             .addComponent(btnGerarPDF)
                             .addComponent(btLimpar)))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
                 .addComponent(btnSair)
                 .addContainerGap())
         );
@@ -230,7 +248,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
+    public javax.swing.JMenuItem jjmSobre;
+    public javax.swing.JMenuItem jjmTutorial;
+    public javax.swing.JMenu jmSobre;
     public javax.swing.JTextArea taTabela;
     // End of variables declaration//GEN-END:variables
 }

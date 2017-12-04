@@ -6,37 +6,32 @@
 package controller;
 
 import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.TextElementArray;
+import com.itextpdf.text.PageSize;
 import com.itextpdf.text.pdf.PdfWriter;
-import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import model.Amortizacao;
 import model.EnumPeriodoTaxa;
 import model.EnumTipoAmortizacao;
 import model.EnumTipoSerie;
-import static model.EnumTipoSerie.ANTECIPADO;
 
 /**
  *
  * @author Wagner
  */
 public class ControlTelaPrincipal {
+
+    ControlTelaSobre telaSobre = null;
 
     Amortizacao a = new Amortizacao();
     CalculoPrincipal p;
@@ -45,7 +40,7 @@ public class ControlTelaPrincipal {
     view.TelaPrincipal tela = null;
 
     public ControlTelaPrincipal() {
-
+        telaSobre = new ControlTelaSobre();
         tela = new view.TelaPrincipal();
         ligaEventos();
     }
@@ -127,11 +122,23 @@ public class ControlTelaPrincipal {
                 limpar();
             }
         });
-        
+
+        tela.jjmSobre.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                telaSobre.chamaTela();
+            }
+        });
+
         tela.btnGerarPDF.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                imprimirPDF();
+                try {
+                    imprimirPDF();
+                } catch (Exception ex) {
+                    Logger.getLogger(ControlTelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
 
@@ -143,58 +150,95 @@ public class ControlTelaPrincipal {
         tela.edQtdParcelas.setText(null);
         tela.edTaxa.setText(null);
         tela.edValor.setText(null);
+        tela.taTabela.setText("");
     }
 
-    private void setDados() {
+    private boolean validouCampos() {
+        boolean lbValidou = true;
+
+        if (tela.edNomeProduto.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(tela, "Você precisa informar nome do produto!");
+            lbValidou = false;
+        }
+
+        if (lbValidou && tela.edValor.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(tela, "Você precisa informar valor!");
+            lbValidou = false;
+        }
+
+        if (lbValidou && tela.edDesconto.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(tela, "Você precisa informar desconto!");
+            lbValidou = false;
+        }
+
+        if (lbValidou && tela.edTaxa.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(tela, "Você precisa informar taxa!");
+            lbValidou = false;
+        }
+
+        if (lbValidou && tela.edQtdParcelas.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(tela, "Você precisa informar quantidade de parcelas!");
+            lbValidou = false;
+        }
+
+        return lbValidou;
+    }
+
+    private boolean setDados() {
+        boolean lbValidouCampos = validouCampos();
         try {
-            a.setNomeProduto(tela.edNomeProduto.getText());
-            a.setVp(Double.parseDouble(tela.edValor.getText()));
-            a.setDesconto(Double.parseDouble(tela.edDesconto.getText()));
-            a.setTaxa(Double.parseDouble(tela.edTaxa.getText()));
-            a.setParcelas(Integer.parseInt(tela.edQtdParcelas.getText()));
-            EnumPeriodoTaxa enumPTaxa = (EnumPeriodoTaxa) tela.cbTaxa.getSelectedItem();
-            EnumTipoAmortizacao enumTAmortizacao = (EnumTipoAmortizacao) tela.cbAmortizacao.getSelectedItem();
-            EnumTipoSerie enumTSerie = (EnumTipoSerie) tela.cbSerie.getSelectedItem();
-            p = new CalculoPrincipal(a);
-            p.selecionaPeriodoTaxa(enumPTaxa.getValor());
-            p.selecionaTipoAmortizacao(enumTAmortizacao.getValorAmort());
-            p.selecionaTipoSerie(enumTSerie.getValorSerie());
-            p.calculoTaxa();
-            p.calculoValorPrincipal();
-            p.verificaTipoDeSerie();
+            if (lbValidouCampos) {
+                a.setNomeProduto(tela.edNomeProduto.getText());
+                a.setVp(Double.parseDouble(tela.edValor.getText()));
+                a.setDesconto(Double.parseDouble(tela.edDesconto.getText()));
+                a.setTaxa(Double.parseDouble(tela.edTaxa.getText()));
+                a.setParcelas(Integer.parseInt(tela.edQtdParcelas.getText()));
+                EnumPeriodoTaxa enumPTaxa = (EnumPeriodoTaxa) tela.cbTaxa.getSelectedItem();
+                EnumTipoAmortizacao enumTAmortizacao = (EnumTipoAmortizacao) tela.cbAmortizacao.getSelectedItem();
+                EnumTipoSerie enumTSerie = (EnumTipoSerie) tela.cbSerie.getSelectedItem();
+                p = new CalculoPrincipal(a);
+                p.selecionaPeriodoTaxa(enumPTaxa.getValor());
+                p.selecionaTipoAmortizacao(enumTAmortizacao.getValorAmort());
+                p.selecionaTipoSerie(enumTSerie.getValorSerie());
+                p.calculoTaxa();
+                p.calculoValorPrincipal();
+                p.verificaTipoDeSerie();
+                tela.taTabela.setText(p.calculoAmortizacao());
+            }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(tela, "Você precisa informar todos os campos");
         }
+
+        return lbValidouCampos;
     }
 
     public void calcular() {
         setDados();
-        tela.taTabela.setText(p.calculoAmortizacao());
     }
 
-    public void imprimirPDF() {
-   
-            setDados();
-            Document document = new Document();
-    try {
-           PdfWriter.getInstance(document, new FileOutputStream("amortizacao.pdf"));
-           
-           document.open();
-           document.add(new Phrase(p.calculoAmortizacao()));
-           
+    public void imprimirPDF() throws Exception {
 
-        } catch (DocumentException | FileNotFoundException ex) {
-            JOptionPane.showMessageDialog(tela, "Erro ao gerar o arquivo " + ex);
-        }
-        finally{
-            document.close();
-        }
+        if (setDados()) {
 
-        try {
-            Desktop.getDesktop().open(new File("amortizacao.pdf"));
-        } catch (IOException ex) {
-           JOptionPane.showMessageDialog(tela, "Não foi possível abrir o arquivo PDF. Erro: " + ex);
+            Document doc = null;
+            OutputStream os = null;
+            try {
+                doc = new Document(PageSize.A4, 5, 5, 50, 50);
+                os = new FileOutputStream("amortizacao.pdf");
+                PdfWriter.getInstance(doc, os);
+                doc.open();
+                p.calculoAmortizacaoPDF(doc);
+
+            } finally {
+                if (doc != null) {
+                    doc.close();
+                    if (os != null) {
+                        os.close();
+                    }
+
+                    Desktop.getDesktop().open(new File("amortizacao.pdf"));
+                }
+            }
         }
     }
-
 }
